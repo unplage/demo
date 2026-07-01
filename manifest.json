@@ -2,12 +2,12 @@
     "name": "demo",
     "short_name": "demo",
     "description": "demo",
-    "start_url": "/music/",
+    "start_url": "/demo/",
     "display": "standalone",
     "background_color": "#f5f5f5",
     "theme_color": "#4CAF50",
     "orientation": "portrait",
-    "scope": "/music/",
+    "scope": "/demo/",
     "icons": [
         {
             "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect fill='%234CAF50' width='192' height='192' rx='20'/%3E%3Ctext x='96' y='120' font-size='80' text-anchor='middle' fill='white'%3Edemo%3C/text%3E%3C/svg%3E",
