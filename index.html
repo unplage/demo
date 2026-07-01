@@ -1,633 +1,805 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>随行天气 · 精准预报</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#1E88E5">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="theme-color" content="#4F46E5" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>" />
+    <title>PWA 待办清单</title>
+    <style>
+        /* ===== 全局重置 & 字体 ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Helvetica, 'Noto Sans', sans-serif;
-      background: #f5f7fb;
-      color: #1f2937;
-      padding: 0 0 20px 0;
-    }
+        :root {
+            --primary: #4F46E5;
+            --primary-light: #818CF8;
+            --primary-dark: #3730A3;
+            --bg: #F3F4F6;
+            --card: #FFFFFF;
+            --text: #1F2937;
+            --text-secondary: #6B7280;
+            --border: #E5E7EB;
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+            --radius: 16px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    /* 滚动条美化 */
-    ::-webkit-scrollbar {
-      height: 4px;
-      width: 4px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #e2e8f0;
-      border-radius: 8px;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #94a3b8;
-      border-radius: 8px;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px 16px 40px;
+            -webkit-font-smoothing: antialiased;
+        }
 
-    .container {
-      max-width: 600px;
-      margin: 0 auto;
-      padding: 16px;
-    }
+        /* ===== 主容器 ===== */
+        .app-container {
+            max-width: 520px;
+            width: 100%;
+            background: var(--card);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 28px 24px 32px;
+            transition: var(--transition);
+        }
 
-    /* 头部城市栏 */
-    .city-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .city-info {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .city-name {
-      font-size: 28px;
-      font-weight: 600;
-      letter-spacing: -0.3px;
-    }
-    .city-name i {
-      font-size: 22px;
-      font-weight: 400;
-      color: #5b6e8c;
-    }
-    .refresh-btn {
-      background: white;
-      border: none;
-      border-radius: 40px;
-      padding: 8px 16px;
-      font-size: 14px;
-      font-weight: 500;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: 0.2s;
-    }
-    .refresh-btn:active {
-      transform: scale(0.96);
-      background: #f1f5f9;
-    }
-    .search-box {
-      background: white;
-      border-radius: 40px;
-      padding: 6px 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-    }
-    .search-box input {
-      border: none;
-      outline: none;
-      font-size: 15px;
-      width: 140px;
-      background: transparent;
-    }
-    .search-box button {
-      background: none;
-      border: none;
-      font-size: 18px;
-      cursor: pointer;
-    }
+        /* ===== 头部 ===== */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--bg);
+        }
 
-    /* 卡片通用样式 */
-    .card {
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(0px);
-      background: white;
-      border-radius: 32px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.05);
-      transition: transform 0.1s ease;
-    }
+        .app-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-    /* 实时天气 */
-    .temp-row {
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-    .now-temp {
-      font-size: 64px;
-      font-weight: 700;
-    }
-    .now-temp small {
-      font-size: 24px;
-      font-weight: 400;
-    }
-    .weather-desc {
-      font-size: 20px;
-      color: #4b5563;
-      text-transform: capitalize;
-    }
-    .high-low {
-      font-size: 18px;
-      color: #6c757d;
-    }
-    .detail-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #edf2f7;
-    }
-    .detail-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .detail-icon {
-      font-size: 24px;
-    }
-    .detail-label {
-      font-size: 13px;
-      color: #6b7280;
-    }
-    .detail-value {
-      font-weight: 600;
-      font-size: 16px;
-    }
+        .app-header .badge {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            background: rgba(79, 70, 229, 0.10);
+            padding: 4px 12px;
+            border-radius: 20px;
+            letter-spacing: 0.3px;
+            -webkit-text-fill-color: var(--primary);
+        }
 
-    /* 预警条 */
-    .alert-card {
-      background: #fff1f0;
-      border-left: 6px solid #f97316;
-      border-radius: 24px;
-      padding: 14px 18px;
-      margin-bottom: 20px;
-      display: none;
-    }
-    .alert-title {
-      font-weight: 700;
-      color: #c2410c;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .alert-text {
-      font-size: 14px;
-      margin-top: 6px;
-      color: #7c2d12;
-    }
+        /* ===== 安装提示横幅 ===== */
+        .install-banner {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(135deg, #EEF2FF, #E0E7FF);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(79, 70, 229, 0.20);
+        }
 
-    /* 滚动小时预报 */
-    .hourly-scroll {
-      display: flex;
-      overflow-x: auto;
-      gap: 20px;
-      padding-bottom: 8px;
-      scroll-snap-type: x mandatory;
-    }
-    .hour-item {
-      flex: 0 0 70px;
-      text-align: center;
-      scroll-snap-align: start;
-    }
-    .hour-time {
-      font-size: 14px;
-      font-weight: 500;
-      color: #4b5563;
-    }
-    .hour-temp {
-      font-size: 20px;
-      font-weight: 600;
-      margin: 8px 0;
-    }
-    .hour-rain {
-      font-size: 13px;
-      color: #3b82f6;
-    }
+        .install-banner.show {
+            display: flex;
+        }
 
-    /* 逐日预报 */
-    .daily-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .daily-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .daily-date {
-      width: 90px;
-      font-weight: 500;
-    }
-    .daily-icon {
-      font-size: 28px;
-      width: 48px;
-      text-align: center;
-    }
-    .daily-temp {
-      width: 100px;
-      text-align: right;
-      font-weight: 500;
-    }
-    .daily-range {
-      color: #6c757d;
-      font-size: 14px;
-      margin-left: 8px;
-    }
+        .install-banner .message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
 
-    footer {
-      text-align: center;
-      font-size: 12px;
-      color: #94a3b8;
-      margin-top: 24px;
-    }
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: #6c757d;
-    }
-    button {
-      background: none;
-      border: none;
-    }
-  </style>
+        .install-banner .message span {
+            font-size: 22px;
+        }
+
+        .install-banner .btn-install {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.30);
+        }
+
+        .install-banner .btn-install:hover {
+            background: var(--primary-dark);
+            transform: scale(1.02);
+        }
+
+        .install-banner .btn-install:active {
+            transform: scale(0.96);
+        }
+
+        .install-banner .btn-close-install {
+            background: transparent;
+            border: none;
+            font-size: 20px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+        }
+
+        /* ===== 状态栏 ===== */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .status-bar .count {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .status-bar .filter-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .status-bar .filter-btn {
+            background: transparent;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .status-bar .filter-btn:hover {
+            background: var(--bg);
+        }
+
+        .status-bar .filter-btn.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        /* ===== 输入区域 ===== */
+        .input-area {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            transition: var(--transition);
+            background: var(--bg);
+            color: var(--text);
+        }
+
+        .input-area input:focus {
+            border-color: var(--primary);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+        }
+
+        .input-area input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .input-area .btn-add {
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 0 22px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
+        }
+
+        .input-area .btn-add:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .input-area .btn-add:active {
+            transform: scale(0.96);
+        }
+
+        /* ===== 待办列表 ===== */
+        .todo-list {
+            list-style: none;
+            margin-top: 4px;
+        }
+
+        .todo-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--bg);
+            border-radius: 12px;
+            margin-bottom: 8px;
+            transition: var(--transition);
+            animation: slideUp 0.25s ease;
+        }
+
+        .todo-item:hover {
+            background: #E8EAF0;
+        }
+
+        .todo-item .checkbox {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: var(--transition);
+            background: #fff;
+        }
+
+        .todo-item .checkbox.checked {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .todo-item .checkbox.checked::after {
+            content: "✓";
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .todo-item .todo-text {
+            flex: 1;
+            font-size: 15px;
+            word-break: break-word;
+            transition: var(--transition);
+        }
+
+        .todo-item .todo-text.completed {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+
+        .todo-item .btn-delete {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 6px;
+            transition: var(--transition);
+            line-height: 1;
+        }
+
+        .todo-item .btn-delete:hover {
+            background: rgba(239, 68, 68, 0.12);
+            color: #EF4444;
+        }
+
+        /* ===== 空状态 ===== */
+        .empty-state {
+            text-align: center;
+            padding: 48px 20px 32px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state .emoji {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+        }
+
+        /* ===== 底部 ===== */
+        .app-footer {
+            margin-top: 24px;
+            padding-top: 16px;
+            border-top: 2px solid var(--bg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .app-footer .clear-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
+            padding: 4px 12px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .app-footer .clear-btn:hover {
+            background: rgba(239, 68, 68, 0.08);
+            color: #EF4444;
+        }
+
+        .app-footer .offline-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .app-footer .offline-status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .app-footer .offline-status .dot.online {
+            background: #22C55E;
+        }
+
+        .app-footer .offline-status .dot.offline {
+            background: #EF4444;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* ===== 动画 ===== */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%,
+            100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 20px 16px 24px;
+            }
+            .app-header h1 {
+                font-size: 20px;
+            }
+            .input-area .btn-add {
+                padding: 0 16px;
+                font-size: 14px;
+            }
+            .todo-item {
+                padding: 12px 14px;
+            }
+        }
+
+        /* ===== 暗色模式 (可选) ===== */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #111827;
+                --card: #1F2937;
+                --text: #F9FAFB;
+                --text-secondary: #9CA3AF;
+                --border: #374151;
+                --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+            }
+            .input-area input {
+                background: #111827;
+                color: #F9FAFB;
+            }
+            .input-area input:focus {
+                background: #1F2937;
+            }
+            .todo-item {
+                background: #111827;
+            }
+            .todo-item:hover {
+                background: #1F2937;
+            }
+            .todo-item .checkbox {
+                background: #1F2937;
+                border-color: #4B5563;
+            }
+            .install-banner {
+                background: linear-gradient(135deg, #1E1B4B, #312E81);
+                border-color: rgba(129, 140, 248, 0.25);
+            }
+            .install-banner .message {
+                color: #A5B4FC;
+            }
+            .app-header .badge {
+                background: rgba(129, 140, 248, 0.15);
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="container" id="app">
-  <div class="city-bar">
-    <div class="city-info">
-      <div class="city-name" id="cityName">定位中...</div>
+
+    <div class="app-container" role="main">
+
+        <!-- ===== 头部 ===== -->
+        <header class="app-header">
+            <h1>📋 待办清单</h1>
+            <span class="badge">PWA Demo</span>
+        </header>
+
+        <!-- ===== 安装横幅 ===== -->
+        <div class="install-banner" id="installBanner" role="alert">
+            <div class="message">
+                <span>📲</span> 安装应用，离线使用
+            </div>
+            <div>
+                <button class="btn-install" id="installBtn">安装</button>
+                <button class="btn-close-install" id="closeInstallBtn" aria-label="关闭">✕</button>
+            </div>
+        </div>
+
+        <!-- ===== 状态栏 ===== -->
+        <div class="status-bar">
+            <span class="count" id="todoCount">0 项</span>
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">全部</button>
+                <button class="filter-btn" data-filter="active">未完成</button>
+                <button class="filter-btn" data-filter="completed">已完成</button>
+            </div>
+        </div>
+
+        <!-- ===== 输入区域 ===== -->
+        <div class="input-area">
+            <input type="text" id="todoInput" placeholder="输入待办事项…" maxlength="120" autocomplete="off" />
+            <button class="btn-add" id="addBtn">添加</button>
+        </div>
+
+        <!-- ===== 列表 ===== -->
+        <ul class="todo-list" id="todoList"></ul>
+
+        <!-- ===== 空状态 (由 JS 控制显示) ===== -->
+        <div class="empty-state" id="emptyState">
+            <span class="emoji">🎯</span>
+            <p>还没有待办事项，添加一条吧！</p>
+        </div>
+
+        <!-- ===== 底部 ===== -->
+        <footer class="app-footer">
+            <button class="clear-btn" id="clearBtn">清除已完成</button>
+            <div class="offline-status">
+                <span class="dot online" id="statusDot"></span>
+                <span id="statusText">在线</span>
+            </div>
+        </footer>
+
     </div>
-    <div style="display: flex; gap: 8px;">
-      <div class="search-box">
-        <input type="text" id="searchInput" placeholder="搜索城市" autocomplete="off">
-        <button id="searchBtn">🔍</button>
-      </div>
-      <button class="refresh-btn" id="refreshBtn">⟳ 刷新</button>
-    </div>
-  </div>
 
-  <!-- 预警专用卡片 -->
-  <div class="alert-card" id="alertCard">
-    <div class="alert-title">⚠️ 天气预警</div>
-    <div id="alertContent" class="alert-text"></div>
-  </div>
+    <!-- ============================================================ -->
+    <!-- JavaScript：PWA 注册 + 待办逻辑                                -->
+    <!-- ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
 
-  <!-- 实时天气卡片 -->
-  <div class="card" id="currentCard">
-    <div class="temp-row">
-      <div>
-        <span class="now-temp" id="tempNow">--<small>°</small></span>
-        <div class="weather-desc" id="weatherDesc">---</div>
-      </div>
-      <div class="high-low" id="highLow">↑ --° ↓ --°</div>
-    </div>
-    <div class="detail-grid">
-      <div class="detail-item"><span class="detail-icon">💧</span><div><div class="detail-label">湿度</div><div class="detail-value" id="humidity">--%</div></div></div>
-      <div class="detail-item"><span class="detail-icon">🌬️</span><div><div class="detail-label">风速</div><div class="detail-value" id="windSpeed">-- km/h</div></div></div>
-      <div class="detail-item"><span class="detail-icon">☀️</span><div><div class="detail-label">紫外线</div><div class="detail-value" id="uvIndex">--</div></div></div>
-      <div class="detail-item"><span class="detail-icon">🫁</span><div><div class="detail-label">空气质量</div><div class="detail-value" id="aqi">--</div></div></div>
-    </div>
-  </div>
+            // ---- DOM 引用 ----
+            const todoInput = document.getElementById('todoInput');
+            const addBtn = document.getElementById('addBtn');
+            const todoList = document.getElementById('todoList');
+            const emptyState = document.getElementById('emptyState');
+            const todoCount = document.getElementById('todoCount');
+            const clearBtn = document.getElementById('clearBtn');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const installBanner = document.getElementById('installBanner');
+            const installBtn = document.getElementById('installBtn');
+            const closeInstallBtn = document.getElementById('closeInstallBtn');
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
 
-  <!-- 逐小时预报 -->
-  <div class="card">
-    <div style="font-weight: 600; margin-bottom: 14px;">⏱️ 逐小时天气</div>
-    <div class="hourly-scroll" id="hourlyContainer">
-      <div class="loading">加载中...</div>
-    </div>
-  </div>
+            // ---- 状态 ----
+            let todos = [];
+            let currentFilter = 'all'; // 'all' | 'active' | 'completed'
+            let nextId = 1;
 
-  <!-- 7日逐日预报 -->
-  <div class="card">
-    <div style="font-weight: 600; margin-bottom: 14px;">📅 未来7天</div>
-    <div class="daily-list" id="dailyContainer">
-      <div class="loading">加载中...</div>
-    </div>
-  </div>
-  <footer>数据源: Open-Meteo · 空气质量/预警: 和风天气</footer>
-</div>
+            // ---- 本地存储 ----
+            const STORAGE_KEY = 'pwa_todos';
 
-<script>
-  // ---------- 配置 ----------
-  const QWEATHER_KEY = 'YOUR_QWEATHER_API_KEY';   // 请替换为您的和风天气key
-  const DEFAULT_LAT = 39.9042;
-  const DEFAULT_LON = 116.4074;
-  let currentLat = DEFAULT_LAT;
-  let currentLon = DEFAULT_LON;
-  let currentCityName = '北京';
+            function loadTodos() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (Array.isArray(parsed) && parsed.length) {
+                            todos = parsed;
+                            // 确保 id 连续性
+                            const maxId = todos.reduce((max, t) => Math.max(max, t.id || 0), 0);
+                            nextId = maxId + 1;
+                            return;
+                        }
+                    }
+                } catch (_) { /* ignore */ }
+                // 默认示例数据
+                todos = [
+                    { id: nextId++, text: '学习 PWA 开发', completed: false },
+                    { id: nextId++, text: '实现离线缓存', completed: false },
+                    { id: nextId++, text: '添加安装提示', completed: true },
+                ];
+            }
 
-  // DOM 元素
-  const cityNameEl = document.getElementById('cityName');
-  const tempNowEl = document.getElementById('tempNow');
-  const weatherDescEl = document.getElementById('weatherDesc');
-  const highLowEl = document.getElementById('highLow');
-  const humidityEl = document.getElementById('humidity');
-  const windSpeedEl = document.getElementById('windSpeed');
-  const uvIndexEl = document.getElementById('uvIndex');
-  const aqiEl = document.getElementById('aqi');
-  const alertCard = document.getElementById('alertCard');
-  const alertContent = document.getElementById('alertContent');
-  const hourlyContainer = document.getElementById('hourlyContainer');
-  const dailyContainer = document.getElementById('dailyContainer');
-  const refreshBtn = document.getElementById('refreshBtn');
-  const searchBtn = document.getElementById('searchBtn');
-  const searchInput = document.getElementById('searchInput');
+            function saveTodos() {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+                } catch (_) { /* ignore */ }
+            }
 
-  // 辅助: WMO代码 -> 天气图标和描述
-  function getWeatherIconAndDesc(code) {
-    const map = {
-      0: { icon: '☀️', desc: '晴朗' },
-      1: { icon: '🌤️', desc: '大部晴朗' },
-      2: { icon: '⛅', desc: '局部多云' },
-      3: { icon: '☁️', desc: '阴天' },
-      45: { icon: '🌫️', desc: '雾' },
-      48: { icon: '🌫️', desc: '雾' },
-      51: { icon: '🌦️', desc: '毛毛雨' },
-      53: { icon: '🌦️', desc: '毛毛雨' },
-      55: { icon: '🌦️', desc: '毛毛雨' },
-      61: { icon: '🌧️', desc: '小雨' },
-      63: { icon: '🌧️', desc: '中雨' },
-      65: { icon: '🌧️', desc: '大雨' },
-      71: { icon: '❄️', desc: '小雪' },
-      73: { icon: '❄️', desc: '中雪' },
-      75: { icon: '❄️', desc: '大雪' },
-      80: { icon: '🌧️', desc: '阵雨' },
-      81: { icon: '🌧️', desc: '阵雨' },
-      82: { icon: '🌧️', desc: '强阵雨' },
-      95: { icon: '⛈️', desc: '雷雨' },
-      96: { icon: '⛈️', desc: '雷阵雨' },
-      99: { icon: '⛈️', desc: '强雷暴' }
-    };
-    return map[code] || { icon: '🌡️', desc: '未知' };
-  }
+            // ---- 渲染 ----
+            function render() {
+                const filtered = getFilteredTodos();
+                const hasItems = filtered.length > 0;
 
-  // 获取城市名 (Open-Meteo Geocoding)
-  async function fetchCityName(lat, lon) {
-    try {
-      const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`);
-      // 单纯为了城市名，其实可用 reverse geocoding: 使用 bigdatacloud 但为了省事，先保留经纬度显示
-      // 改用 nominatim? 但可能限制，简单使用 openmeteo 自身不返回城市名，用离线库？ 调用 geocoding api 反向查找:
-      const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${lat},${lon}&count=1`);
-      // 反向不太好，直接用经纬度转中文城市：第三方，但为了稳定，做一个简单备用，让用户手动搜索。默认显示坐标或“当前位置”
-      // 改进：调用 bigdatacloud 免费反向地理编码（无需key）
-      const rev = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=zh`);
-      const data = await rev.json();
-      return data.city || data.locality || `${lat.toFixed(2)},${lon.toFixed(2)}`;
-    } catch {
-      return `${lat.toFixed(2)}°,${lon.toFixed(2)}°`;
-    }
-  }
+                // 清空列表
+                todoList.innerHTML = '';
 
-  // 搜索城市
-  async function searchCity(query) {
-    if (!query) return;
-    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=1&language=zh`;
-    try {
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.results && data.results.length > 0) {
-        const first = data.results[0];
-        currentLat = first.latitude;
-        currentLon = first.longitude;
-        currentCityName = first.name;
-        cityNameEl.innerText = currentCityName;
-        localStorage.setItem('lastCity', JSON.stringify({ lat: currentLat, lon: currentLon, name: currentCityName }));
-        loadAllWeather();
-      } else {
-        alert('未找到该城市，试试拼音或英文名');
-      }
-    } catch (e) {
-      alert('搜索失败');
-    }
-  }
+                if (!hasItems) {
+                    emptyState.style.display = 'block';
+                    todoList.style.display = 'none';
+                } else {
+                    emptyState.style.display = 'none';
+                    todoList.style.display = 'block';
 
-  // 获取当前位置
-  function getCurrentPosition() {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          currentLat = pos.coords.latitude;
-          currentLon = pos.coords.longitude;
-          updateCityNameByCoords();
-          loadAllWeather();
-        },
-        () => {
-          // 定位失败使用默认或缓存
-          loadCachedCity();
-          loadAllWeather();
-        }
-      );
-    } else {
-      loadCachedCity();
-      loadAllWeather();
-    }
-  }
+                    filtered.forEach(todo => {
+                        const li = document.createElement('li');
+                        li.className = 'todo-item';
+                        li.dataset.id = todo.id;
 
-  async function updateCityNameByCoords() {
-    try {
-      const rev = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${currentLat}&longitude=${currentLon}&localityLanguage=zh`);
-      const data = await rev.json();
-      currentCityName = data.city || data.locality || "未知城市";
-      cityNameEl.innerText = currentCityName;
-      localStorage.setItem('lastCity', JSON.stringify({ lat: currentLat, lon: currentLon, name: currentCityName }));
-    } catch (e) {
-      cityNameEl.innerText = `${currentLat.toFixed(2)}°,${currentLon.toFixed(2)}°`;
-    }
-  }
+                        // checkbox
+                        const checkbox = document.createElement('div');
+                        checkbox.className = 'checkbox' + (todo.completed ? ' checked' : '');
+                        checkbox.setAttribute('role', 'checkbox');
+                        checkbox.setAttribute('aria-checked', todo.completed ? 'true' : 'false');
+                        checkbox.tabIndex = 0;
 
-  function loadCachedCity() {
-    const cached = localStorage.getItem('lastCity');
-    if (cached) {
-      try {
-        const city = JSON.parse(cached);
-        currentLat = city.lat;
-        currentLon = city.lon;
-        currentCityName = city.name;
-        cityNameEl.innerText = currentCityName;
-      } catch(e) {}
-    } else {
-      currentLat = DEFAULT_LAT;
-      currentLon = DEFAULT_LON;
-      currentCityName = '北京';
-      cityNameEl.innerText = currentCityName;
-    }
-  }
+                        // text
+                        const textSpan = document.createElement('span');
+                        textSpan.className = 'todo-text' + (todo.completed ? ' completed' : '');
+                        textSpan.textContent = todo.text;
 
-  // 核心: 加载所有天气 (Open-Meteo + 和风天气AQI/预警)
-  async function loadAllWeather() {
-    showLoading();
-    try {
-      // 并行请求 Open-Meteo (实时+小时+7天) 和 和风天气 (aqi+预警)
-      const openMeteoUrl = `https://api.open-meteo.com/v1/forecast?latitude=${currentLat}&longitude=${currentLon}&current_weather=true&hourly=temperature_2m,precipitation_probability,relative_humidity_2m,windspeed_10m,uv_index&daily=weathercode,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
-      const qweatherAqiUrl = `https://devapi.qweather.com/v7/air/now?location=${currentLon},${currentLat}&key=${QWEATHER_KEY}`;
-      const qweatherWarningUrl = `https://devapi.qweather.com/v7/warning/now?location=${currentLon},${currentLat}&key=${QWEATHER_KEY}`;
+                        // delete button
+                        const delBtn = document.createElement('button');
+                        delBtn.className = 'btn-delete';
+                        delBtn.innerHTML = '✕';
+                        delBtn.setAttribute('aria-label', '删除');
 
-      const [weatherRes, aqiRes, warnRes] = await Promise.all([
-        fetch(openMeteoUrl),
-        fetch(qweatherAqiUrl),
-        fetch(qweatherWarningUrl)
-      ]);
-      const weatherData = await weatherRes.json();
-      const aqiData = await aqiRes.json();
-      const warningData = await warnRes.json();
+                        li.appendChild(checkbox);
+                        li.appendChild(textSpan);
+                        li.appendChild(delBtn);
+                        todoList.appendChild(li);
 
-      // 处理实时 & 逐日 & 小时
-      renderCurrentWeather(weatherData);
-      renderHourly(weatherData);
-      renderDaily(weatherData);
-      renderAqi(aqiData);
-      renderWarning(warningData);
-    } catch (error) {
-      console.error(error);
-      alert('天气数据加载失败，可稍后刷新');
-    } finally {
-      hideLoading();
-    }
-  }
+                        // ---- 事件绑定 ----
+                        // 切换完成状态
+                        const toggle = () => {
+                            todo.completed = !todo.completed;
+                            saveTodos();
+                            render();
+                        };
+                        checkbox.addEventListener('click', toggle);
+                        checkbox.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                toggle();
+                            }
+                        });
 
-  function renderCurrentWeather(data) {
-    if (!data.current_weather) return;
-    const current = data.current_weather;
-    const temperature = current.temperature;
-    const weatherCode = current.weathercode;
-    const { icon, desc } = getWeatherIconAndDesc(weatherCode);
-    tempNowEl.innerHTML = `${Math.round(temperature)}<small>°</small>`;
-    weatherDescEl.innerHTML = `${icon} ${desc}`;
-    if (data.daily && data.daily.temperature_2m_max.length>0) {
-      const max = Math.round(data.daily.temperature_2m_max[0]);
-      const min = Math.round(data.daily.temperature_2m_min[0]);
-      highLowEl.innerHTML = `↑ ${max}°  ↓ ${min}°`;
-    }
-    // 湿度、风速、紫外线从hourly的当前小时取值
-    if (data.hourly && data.hourly.time.length) {
-      const now = new Date();
-      const nowHourStr = now.toISOString().slice(0,13)+":00";
-      const idx = data.hourly.time.findIndex(t => t >= nowHourStr);
-      const validIdx = idx !== -1 ? idx : 0;
-      const humidity = data.hourly.relative_humidity_2m?.[validIdx];
-      const windspeed = data.current_weather.windspeed;
-      const uv = data.hourly.uv_index?.[validIdx];
-      humidityEl.innerText = humidity !== undefined ? `${humidity}%` : '--%';
-      windSpeedEl.innerText = windspeed !== undefined ? `${Math.round(windspeed)} km/h` : '--';
-      uvIndexEl.innerText = uv !== undefined ? uv : '--';
-    }
-  }
+                        // 删除
+                        delBtn.addEventListener('click', () => {
+                            todos = todos.filter(t => t.id !== todo.id);
+                            saveTodos();
+                            render();
+                        });
+                    });
+                }
 
-  function renderHourly(data) {
-    if (!data.hourly) return;
-    const times = data.hourly.time.slice(0, 24);
-    const temps = data.hourly.temperature_2m.slice(0,24);
-    const rains = data.hourly.precipitation_probability.slice(0,24);
-    hourlyContainer.innerHTML = '';
-    times.forEach((time, i) => {
-      const date = new Date(time);
-      const hour = date.getHours();
-      const temp = Math.round(temps[i]);
-      const rainProb = rains[i];
-      const div = document.createElement('div');
-      div.className = 'hour-item';
-      div.innerHTML = `
-        <div class="hour-time">${hour}:00</div>
-        <div class="hour-temp">${temp}°</div>
-        <div class="hour-rain">💧${rainProb}%</div>
-      `;
-      hourlyContainer.appendChild(div);
-    });
-  }
+                // 更新计数
+                const total = todos.length;
+                const done = todos.filter(t => t.completed).length;
+                todoCount.textContent = `${total} 项 (已完成 ${done})`;
 
-  function renderDaily(data) {
-    if (!data.daily) return;
-    const dailyList = document.getElementById('dailyContainer');
-    dailyList.innerHTML = '';
-    for (let i = 0; i < Math.min(7, data.daily.time.length); i++) {
-      const date = new Date(data.daily.time[i]);
-      const weekStr = i === 0 ? '今天' : date.toLocaleDateString('zh-CN', { weekday: 'short' });
-      const maxTemp = Math.round(data.daily.temperature_2m_max[i]);
-      const minTemp = Math.round(data.daily.temperature_2m_min[i]);
-      const code = data.daily.weathercode[i];
-      const { icon } = getWeatherIconAndDesc(code);
-      const row = document.createElement('div');
-      row.className = 'daily-row';
-      row.innerHTML = `
-        <div class="daily-date">${weekStr}</div>
-        <div class="daily-icon">${icon}</div>
-        <div class="daily-temp">${maxTemp}° / ${minTemp}°</div>
-      `;
-      dailyList.appendChild(row);
-    }
-  }
+                // 更新 filter 按钮状态
+                filterBtns.forEach(btn => {
+                    const filter = btn.dataset.filter;
+                    btn.classList.toggle('active', filter === currentFilter);
+                });
 
-  function renderAqi(aqiData) {
-    if (aqiData.code === '200' && aqiData.now) {
-      const aqi = aqiData.now.aqi;
-      aqiEl.innerText = aqi || '--';
-    } else {
-      aqiEl.innerText = '暂不可用';
-    }
-  }
+                // 清空按钮状态
+                clearBtn.style.display = done > 0 ? 'inline-block' : 'none';
+            }
 
-  function renderWarning(warningData) {
-    if (warningData.code === '200' && warningData.warning && warningData.warning.length > 0) {
-      const warn = warningData.warning[0];
-      alertContent.innerHTML = `${warn.title} · ${warn.level} · ${warn.text}`;
-      alertCard.style.display = 'block';
-    } else {
-      alertCard.style.display = 'none';
-    }
-  }
+            function getFilteredTodos() {
+                if (currentFilter === 'active') {
+                    return todos.filter(t => !t.completed);
+                } else if (currentFilter === 'completed') {
+                    return todos.filter(t => t.completed);
+                }
+                return todos.slice(); // all
+            }
 
-  function showLoading() {
-    // 简单占位，不清空主体，避免闪烁
-    document.querySelectorAll('.loading').forEach(el => el.innerHTML = '加载中...');
-  }
-  function hideLoading() {
-    // 已经渲染过，无需额外清除
-  }
+            // ---- 添加待办 ----
+            function addTodo() {
+                const text = todoInput.value.trim();
+                if (!text) {
+                    todoInput.focus();
+                    return;
+                }
+                todos.push({ id: nextId++, text, completed: false });
+                saveTodos();
+                todoInput.value = '';
+                todoInput.focus();
+                render();
+            }
 
-  // 初始化
-  function init() {
-    const stored = localStorage.getItem('lastCity');
-    if (stored) {
-      try {
-        const city = JSON.parse(stored);
-        currentLat = city.lat;
-        currentLon = city.lon;
-        currentCityName = city.name;
-        cityNameEl.innerText = currentCityName;
-        loadAllWeather();
-      } catch(e) { getCurrentPosition(); }
-    } else {
-      getCurrentPosition();
-    }
-    refreshBtn.onclick = () => loadAllWeather();
-    searchBtn.onclick = () => searchCity(searchInput.value.trim());
-    searchInput.addEventListener('keypress', (e) => {
-      if(e.key === 'Enter') searchCity(searchInput.value.trim());
-    });
-    // 注册 Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('./sw.js').then(reg => console.log('SW registered', reg)).catch(err => console.log('SW failed', err));
-    }
-  }
-  init();
-</script>
+            // ---- 清除已完成 ----
+            function clearCompleted() {
+                const hasCompleted = todos.some(t => t.completed);
+                if (!hasCompleted) return;
+                todos = todos.filter(t => !t.completed);
+                saveTodos();
+                render();
+            }
+
+            // ---- 过滤切换 ----
+            function setFilter(filter) {
+                if (filter === currentFilter) return;
+                currentFilter = filter;
+                render();
+            }
+
+            // ---- 网络状态 ----
+            function updateOnlineStatus() {
+                const online = navigator.onLine;
+                statusDot.className = 'dot ' + (online ? 'online' : 'offline');
+                statusText.textContent = online ? '在线' : '离线';
+            }
+
+            // ---- PWA 安装 ----
+            let deferredPrompt = null;
+
+            function initPWA() {
+                // 注册 Service Worker
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('sw.js')
+                        .then(reg => {
+                            console.log('[PWA] Service Worker 注册成功:', reg);
+                        })
+                        .catch(err => {
+                            console.warn('[PWA] Service Worker 注册失败:', err);
+                        });
+                }
+
+                // 监听 beforeinstallprompt
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    deferredPrompt = e;
+                    installBanner.classList.add('show');
+                });
+
+                // 安装按钮
+                installBtn.addEventListener('click', async () => {
+                    if (!deferredPrompt) return;
+                    try {
+                        const result = await deferredPrompt.prompt();
+                        console.log('[PWA] 安装结果:', result.outcome);
+                        if (result.outcome === 'accepted') {
+                            installBanner.classList.remove('show');
+                        }
+                        deferredPrompt = null;
+                    } catch (_) {
+                        /* ignore */
+                    }
+                });
+
+                // 关闭横幅
+                closeInstallBtn.addEventListener('click', () => {
+                    installBanner.classList.remove('show');
+                });
+
+                // 监听 appinstalled
+                window.addEventListener('appinstalled', () => {
+                    installBanner.classList.remove('show');
+                    console.log('[PWA] 应用已安装');
+                });
+            }
+
+            // ---- 初始化 ----
+            function init() {
+                loadTodos();
+                render();
+                updateOnlineStatus();
+
+                // 事件绑定
+                addBtn.addEventListener('click', addTodo);
+                todoInput.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') addTodo();
+                });
+
+                clearBtn.addEventListener('click', clearCompleted);
+
+                filterBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        setFilter(btn.dataset.filter);
+                    });
+                });
+
+                // 网络状态变化
+                window.addEventListener('online', updateOnlineStatus);
+                window.addEventListener('offline', updateOnlineStatus);
+
+                // PWA 相关
+                initPWA();
+
+                // 点击空白区域自动聚焦输入
+                document.addEventListener('click', (e) => {
+                    if (e.target.closest('.app-container') && !e.target.closest('input') && !e.target.closest(
+                            'button')) {
+                        todoInput.focus();
+                    }
+                });
+
+                console.log('[PWA] 应用已启动 🚀');
+            }
+
+            // DOM 就绪后启动
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+        })();
+    </script>
+
 </body>
 </html>
