@@ -1,21 +1,21 @@
 {
-    "name": "demo",
-    "short_name": "demo",
-    "description": "demo",
+    "name": "英文杂志书库",
+    "short_name": "书库",
+    "description": "经济学人、纽约客、大西洋月刊、连线等英语杂志书库，自动同步最新一期",
     "start_url": "/demo/",
     "display": "standalone",
-    "background_color": "#f5f5f5",
-    "theme_color": "#4CAF50",
+    "background_color": "#F3F4F6",
+    "theme_color": "#4F46E5",
     "orientation": "portrait",
     "scope": "/demo/",
     "icons": [
         {
-            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect fill='%234CAF50' width='192' height='192' rx='20'/%3E%3Ctext x='96' y='120' font-size='80' text-anchor='middle' fill='white'%3Edemo%3C/text%3E%3C/svg%3E",
+            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect fill='%234F46E5' width='192' height='192' rx='20'/%3E%3Ctext x='96' y='130' font-size='100' text-anchor='middle' fill='white'%3E📚%3C/text%3E%3C/svg%3E",
             "sizes": "192x192",
             "type": "image/svg+xml"
         },
         {
-            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect fill='%234CAF50' width='512' height='512' rx='40'/%3E%3Ctext x='256' y='320' font-size='200' text-anchor='middle' fill='white'%3Edemo%3C/text%3E%3C/svg%3E",
+            "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect fill='%234F46E5' width='512' height='512' rx='40'/%3E%3Ctext x='256' y='340' font-size='260' text-anchor='middle' fill='white'%3E📚%3C/text%3E%3C/svg%3E",
             "sizes": "512x512",
             "type": "image/svg+xml"
         }

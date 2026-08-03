@@ -7,15 +7,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="manifest" href="manifest.json" />
-    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>" />
-    <title>PWA 待办清单</title>
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>" />
+    <title>英文杂志书库</title>
     <style>
-        /* ===== 全局重置 & 字体 ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         :root {
             --primary: #4F46E5;
@@ -26,9 +21,15 @@
             --text: #1F2937;
             --text-secondary: #6B7280;
             --border: #E5E7EB;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+            --shadow: 0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.02);
             --radius: 16px;
             --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --success: #22C55E;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            --info-bg: #EEF2FF;
+            --info-border: rgba(79, 70, 229, 0.20);
+            --info-text: #3730A3;
         }
 
         body {
@@ -43,7 +44,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ===== 主容器 ===== */
         .app-container {
             max-width: 520px;
             width: 100%;
@@ -54,38 +54,237 @@
             transition: var(--transition);
         }
 
-        /* ===== 头部 ===== */
+        /* Header */
         .app-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             padding-bottom: 16px;
             border-bottom: 2px solid var(--bg);
         }
-
         .app-header h1 {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 700;
-            letter-spacing: -0.3px;
             background: linear-gradient(135deg, var(--primary), var(--primary-light));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
         .app-header .badge {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 600;
             color: var(--primary);
-            background: rgba(79, 70, 229, 0.10);
-            padding: 4px 12px;
+            background: rgba(79,70,229,0.10);
+            padding: 4px 10px;
             border-radius: 20px;
             letter-spacing: 0.3px;
             -webkit-text-fill-color: var(--primary);
         }
 
-        /* ===== 安装提示横幅 ===== */
+        /* Sync Status */
+        .sync-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .sync-bar .sync-info {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sync-bar .sync-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .sync-bar .sync-dot.ok { background: var(--success); }
+        .sync-bar .sync-dot.stale { background: var(--warning); animation: pulse 1.5s infinite; }
+        .sync-bar .btn-refresh {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .sync-bar .btn-refresh:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(79,70,229,0.05);
+        }
+        .sync-bar .btn-refresh:active { transform: scale(0.96); }
+        .sync-bar .btn-refresh.spinning .refresh-icon {
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* Format Filter */
+        .format-filter {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .format-filter .ff-btn {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .format-filter .ff-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .format-filter .ff-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+        .format-filter .ff-btn.active { -webkit-text-fill-color: #fff; }
+
+        /* Magazine Card */
+        .magazine-card {
+            background: var(--bg);
+            border-radius: 14px;
+            padding: 18px 16px;
+            margin-bottom: 12px;
+            transition: var(--transition);
+            animation: slideUp 0.3s ease;
+        }
+        .magazine-card:hover { background: #E8EAF0; }
+
+        .mag-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
+        .mag-card-header .mag-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            line-height: 1.3;
+        }
+        .mag-card-header .mag-issue {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary);
+            background: rgba(79,70,229,0.10);
+            padding: 3px 10px;
+            border-radius: 12px;
+            white-space: nowrap;
+            -webkit-text-fill-color: var(--primary);
+        }
+
+        /* File List inside card */
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--card);
+            border-radius: 10px;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        .file-item:hover { border-color: var(--primary-light); box-shadow: 0 2px 8px rgba(79,70,229,0.08); }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 0;
+            flex: 1;
+        }
+        .file-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+            width: 32px;
+            text-align: center;
+        }
+        .file-meta {
+            min-width: 0;
+        }
+        .file-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .file-size {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 1px;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+            margin-left: 10px;
+        }
+        .file-actions a {
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .btn-preview {
+            background: rgba(79,70,229,0.08);
+            color: var(--primary);
+        }
+        .btn-preview:hover { background: rgba(79,70,229,0.18); }
+        .btn-download {
+            background: var(--primary);
+            color: #fff;
+        }
+        .btn-download:hover { background: var(--primary-dark); }
+
+        /* Loading / Error / Empty */
+        .state-msg {
+            text-align: center;
+            padding: 48px 20px 32px;
+            color: var(--text-secondary);
+        }
+        .state-msg .emoji { font-size: 48px; display: block; margin-bottom: 12px; }
+        .state-msg p { font-size: 15px; line-height: 1.5; }
+        .state-msg .error-detail { font-size: 13px; margin-top: 8px; color: var(--danger); word-break: break-all; }
+
+        .spinner {
+            width: 36px; height: 36px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        /* Install Banner */
         .install-banner {
             display: none;
             align-items: center;
@@ -94,26 +293,17 @@
             border-radius: 12px;
             padding: 12px 16px;
             margin-bottom: 20px;
-            border: 1px solid rgba(79, 70, 229, 0.20);
+            border: 1px solid var(--info-border);
         }
-
-        .install-banner.show {
-            display: flex;
-        }
-
+        .install-banner.show { display: flex; }
         .install-banner .message {
             display: flex;
             align-items: center;
             gap: 10px;
             font-size: 14px;
             font-weight: 500;
-            color: var(--primary-dark);
+            color: var(--info-text);
         }
-
-        .install-banner .message span {
-            font-size: 22px;
-        }
-
         .install-banner .btn-install {
             background: var(--primary);
             color: #fff;
@@ -124,18 +314,10 @@
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
-            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.30);
+            box-shadow: 0 2px 8px rgba(79,70,229,0.30);
         }
-
-        .install-banner .btn-install:hover {
-            background: var(--primary-dark);
-            transform: scale(1.02);
-        }
-
-        .install-banner .btn-install:active {
-            transform: scale(0.96);
-        }
-
+        .install-banner .btn-install:hover { background: var(--primary-dark); transform: scale(1.02); }
+        .install-banner .btn-install:active { transform: scale(0.96); }
         .install-banner .btn-close-install {
             background: transparent;
             border: none;
@@ -146,197 +328,10 @@
             line-height: 1;
         }
 
-        /* ===== 状态栏 ===== */
-        .status-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-        }
-
-        .status-bar .count {
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .status-bar .filter-group {
-            display: flex;
-            gap: 6px;
-        }
-
-        .status-bar .filter-btn {
-            background: transparent;
-            border: none;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .status-bar .filter-btn:hover {
-            background: var(--bg);
-        }
-
-        .status-bar .filter-btn.active {
-            background: var(--primary);
-            color: #fff;
-        }
-
-        /* ===== 输入区域 ===== */
-        .input-area {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .input-area input {
-            flex: 1;
-            padding: 12px 16px;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            font-size: 15px;
-            outline: none;
-            transition: var(--transition);
-            background: var(--bg);
-            color: var(--text);
-        }
-
-        .input-area input:focus {
-            border-color: var(--primary);
-            background: #fff;
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
-        }
-
-        .input-area input::placeholder {
-            color: var(--text-secondary);
-        }
-
-        .input-area .btn-add {
-            background: var(--primary);
-            color: #fff;
-            border: none;
-            padding: 0 22px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            white-space: nowrap;
-            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.25);
-        }
-
-        .input-area .btn-add:hover {
-            background: var(--primary-dark);
-            transform: translateY(-1px);
-        }
-
-        .input-area .btn-add:active {
-            transform: scale(0.96);
-        }
-
-        /* ===== 待办列表 ===== */
-        .todo-list {
-            list-style: none;
-            margin-top: 4px;
-        }
-
-        .todo-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 14px 16px;
-            background: var(--bg);
-            border-radius: 12px;
-            margin-bottom: 8px;
-            transition: var(--transition);
-            animation: slideUp 0.25s ease;
-        }
-
-        .todo-item:hover {
-            background: #E8EAF0;
-        }
-
-        .todo-item .checkbox {
-            width: 22px;
-            height: 22px;
-            border-radius: 6px;
-            border: 2px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            flex-shrink: 0;
-            transition: var(--transition);
-            background: #fff;
-        }
-
-        .todo-item .checkbox.checked {
-            background: var(--primary);
-            border-color: var(--primary);
-        }
-
-        .todo-item .checkbox.checked::after {
-            content: "✓";
-            color: #fff;
-            font-size: 14px;
-            font-weight: 700;
-        }
-
-        .todo-item .todo-text {
-            flex: 1;
-            font-size: 15px;
-            word-break: break-word;
-            transition: var(--transition);
-        }
-
-        .todo-item .todo-text.completed {
-            text-decoration: line-through;
-            color: var(--text-secondary);
-        }
-
-        .todo-item .btn-delete {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 18px;
-            cursor: pointer;
-            padding: 4px 6px;
-            border-radius: 6px;
-            transition: var(--transition);
-            line-height: 1;
-        }
-
-        .todo-item .btn-delete:hover {
-            background: rgba(239, 68, 68, 0.12);
-            color: #EF4444;
-        }
-
-        /* ===== 空状态 ===== */
-        .empty-state {
-            text-align: center;
-            padding: 48px 20px 32px;
-            color: var(--text-secondary);
-        }
-
-        .empty-state .emoji {
-            font-size: 48px;
-            display: block;
-            margin-bottom: 12px;
-        }
-
-        .empty-state p {
-            font-size: 15px;
-        }
-
-        /* ===== 底部 ===== */
+        /* Footer */
         .app-footer {
-            margin-top: 24px;
-            padding-top: 16px;
+            margin-top: 20px;
+            padding-top: 14px;
             border-top: 2px solid var(--bg);
             display: flex;
             justify-content: space-between;
@@ -344,85 +339,37 @@
             font-size: 13px;
             color: var(--text-secondary);
         }
-
-        .app-footer .clear-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 13px;
-            cursor: pointer;
-            padding: 4px 12px;
-            border-radius: 8px;
-            transition: var(--transition);
-        }
-
-        .app-footer .clear-btn:hover {
-            background: rgba(239, 68, 68, 0.08);
-            color: #EF4444;
-        }
-
         .app-footer .offline-status {
             display: flex;
             align-items: center;
             gap: 6px;
         }
-
-        .app-footer .offline-status .dot {
-            width: 8px;
-            height: 8px;
+        .app-footer .dot {
+            width: 8px; height: 8px;
             border-radius: 50%;
             display: inline-block;
         }
+        .app-footer .dot.online { background: var(--success); }
+        .app-footer .dot.offline { background: var(--danger); animation: pulse 1.5s infinite; }
 
-        .app-footer .offline-status .dot.online {
-            background: #22C55E;
-        }
-
-        .app-footer .offline-status .dot.offline {
-            background: #EF4444;
-            animation: pulse 1.5s infinite;
-        }
-
-        /* ===== 动画 ===== */
+        /* Animations */
         @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
 
-        @keyframes pulse {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.3;
-            }
-        }
-
-        /* ===== 响应式 ===== */
+        /* Responsive */
         @media (max-width: 480px) {
-            .app-container {
-                padding: 20px 16px 24px;
-            }
-            .app-header h1 {
-                font-size: 20px;
-            }
-            .input-area .btn-add {
-                padding: 0 16px;
-                font-size: 14px;
-            }
-            .todo-item {
-                padding: 12px 14px;
-            }
+            .app-container { padding: 20px 16px 24px; }
+            .app-header h1 { font-size: 19px; }
+            .file-item { flex-direction: column; align-items: stretch; gap: 8px; }
+            .file-actions { justify-content: flex-end; margin-left: 0; }
+            .mag-card-header { flex-direction: column; gap: 6px; }
         }
 
-        /* ===== 暗色模式 (可选) ===== */
+        /* Dark Mode */
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg: #111827;
@@ -430,35 +377,22 @@
                 --text: #F9FAFB;
                 --text-secondary: #9CA3AF;
                 --border: #374151;
-                --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+                --shadow: 0 10px 25px -5px rgba(0,0,0,0.4);
+                --info-bg: #1E1B4B;
+                --info-border: rgba(129, 140, 248, 0.25);
+                --info-text: #A5B4FC;
             }
-            .input-area input {
-                background: #111827;
-                color: #F9FAFB;
-            }
-            .input-area input:focus {
-                background: #1F2937;
-            }
-            .todo-item {
-                background: #111827;
-            }
-            .todo-item:hover {
-                background: #1F2937;
-            }
-            .todo-item .checkbox {
-                background: #1F2937;
-                border-color: #4B5563;
-            }
-            .install-banner {
-                background: linear-gradient(135deg, #1E1B4B, #312E81);
-                border-color: rgba(129, 140, 248, 0.25);
-            }
-            .install-banner .message {
-                color: #A5B4FC;
-            }
-            .app-header .badge {
-                background: rgba(129, 140, 248, 0.15);
-            }
+            .magazine-card { background: #111827; }
+            .magazine-card:hover { background: #1F2937; }
+            .file-item { background: #111827; }
+            .file-item:hover { background: #1F2937; border-color: #4B5563; }
+            .install-banner { background: linear-gradient(135deg, #1E1B4B, #312E81); border-color: rgba(129,140,248,0.25); }
+            .install-banner .message { color: #A5B4FC; }
+            .app-header .badge { background: rgba(129,140,248,0.15); }
+            .sync-bar .btn-refresh { border-color: #4B5563; color: #9CA3AF; }
+            .sync-bar .btn-refresh:hover { border-color: #818CF8; color: #818CF8; background: rgba(129,140,248,0.08); }
+            .format-filter .ff-btn { border-color: #4B5563; color: #9CA3AF; }
+            .format-filter .ff-btn:hover { border-color: #818CF8; color: #818CF8; }
         }
     </style>
 </head>
@@ -466,51 +400,65 @@
 
     <div class="app-container" role="main">
 
-        <!-- ===== 头部 ===== -->
+        <!-- Header -->
         <header class="app-header">
-            <h1>📋 待办清单</h1>
-            <span class="badge">PWA Demo</span>
+            <h1>📚 英文书库</h1>
+            <span class="badge">PWA</span>
         </header>
 
-        <!-- ===== 安装横幅 ===== -->
+        <!-- Install Banner -->
         <div class="install-banner" id="installBanner" role="alert">
-            <div class="message">
-                <span>📲</span> 安装应用，离线使用
-            </div>
+            <div class="message"><span>📲</span> 安装应用，离线使用</div>
             <div>
                 <button class="btn-install" id="installBtn">安装</button>
                 <button class="btn-close-install" id="closeInstallBtn" aria-label="关闭">✕</button>
             </div>
         </div>
 
-        <!-- ===== 状态栏 ===== -->
-        <div class="status-bar">
-            <span class="count" id="todoCount">0 项</span>
-            <div class="filter-group">
-                <button class="filter-btn active" data-filter="all">全部</button>
-                <button class="filter-btn" data-filter="active">未完成</button>
-                <button class="filter-btn" data-filter="completed">已完成</button>
+        <!-- Sync Status -->
+        <div class="sync-bar">
+            <div class="sync-info">
+                <span class="sync-dot" id="syncDot"></span>
+                <span id="syncText">加载中...</span>
             </div>
+            <button class="btn-refresh" id="refreshBtn">
+                <span class="refresh-icon">⟳</span> 刷新
+            </button>
         </div>
 
-        <!-- ===== 输入区域 ===== -->
-        <div class="input-area">
-            <input type="text" id="todoInput" placeholder="输入待办事项…" maxlength="120" autocomplete="off" />
-            <button class="btn-add" id="addBtn">添加</button>
+        <!-- Format Filter -->
+        <div class="format-filter" id="formatFilter">
+            <button class="ff-btn active" data-format="all">全部格式</button>
+            <button class="ff-btn" data-format="epub">📖 EPUB</button>
+            <button class="ff-btn" data-format="pdf">📄 PDF</button>
+            <button class="ff-btn" data-format="mobi">📱 MOBI</button>
         </div>
 
-        <!-- ===== 列表 ===== -->
-        <ul class="todo-list" id="todoList"></ul>
+        <!-- Magazine List -->
+        <div id="magazineList"></div>
 
-        <!-- ===== 空状态 (由 JS 控制显示) ===== -->
-        <div class="empty-state" id="emptyState">
-            <span class="emoji">🎯</span>
-            <p>还没有待办事项，添加一条吧！</p>
+        <!-- Loading State -->
+        <div class="state-msg" id="loadingState">
+            <div class="spinner"></div>
+            <p>正在加载书库...</p>
         </div>
 
-        <!-- ===== 底部 ===== -->
+        <!-- Error State -->
+        <div class="state-msg" id="errorState" style="display:none">
+            <span class="emoji">⚠️</span>
+            <p>加载失败</p>
+            <div class="error-detail" id="errorDetail"></div>
+        </div>
+
+        <!-- Empty State -->
+        <div class="state-msg" id="emptyState" style="display:none">
+            <span class="emoji">📭</span>
+            <p>暂无书库内容<br>等待首次同步...</p>
+        </div>
+
+        <!-- Footer -->
         <footer class="app-footer">
-            <button class="clear-btn" id="clearBtn">清除已完成</button>
+            <span id="fileCount">-</span>
             <div class="offline-status">
                 <span class="dot online" id="statusDot"></span>
                 <span id="statusText">在线</span>
@@ -519,286 +467,261 @@
 
     </div>
 
-    <!-- ============================================================ -->
-    <!-- JavaScript：PWA 注册 + 待办逻辑                                -->
-    <!-- ============================================================ -->
     <script>
-        (function() {
-            'use strict';
+    (function() {
+        'use strict';
 
-            // ---- DOM 引用 ----
-            const todoInput = document.getElementById('todoInput');
-            const addBtn = document.getElementById('addBtn');
-            const todoList = document.getElementById('todoList');
-            const emptyState = document.getElementById('emptyState');
-            const todoCount = document.getElementById('todoCount');
-            const clearBtn = document.getElementById('clearBtn');
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            const installBanner = document.getElementById('installBanner');
-            const installBtn = document.getElementById('installBtn');
-            const closeInstallBtn = document.getElementById('closeInstallBtn');
-            const statusDot = document.getElementById('statusDot');
-            const statusText = document.getElementById('statusText');
+        const BASE_PATH = location.pathname.replace(/\/[^/]*$/, '/');
+        const INDEX_URL = 'books/index.json';
 
-            // ---- 状态 ----
-            let todos = [];
-            let currentFilter = 'all'; // 'all' | 'active' | 'completed'
-            let nextId = 1;
+        const magazineList = document.getElementById('magazineList');
+        const loadingState = document.getElementById('loadingState');
+        const errorState = document.getElementById('errorState');
+        const errorDetail = document.getElementById('errorDetail');
+        const emptyState = document.getElementById('emptyState');
+        const syncDot = document.getElementById('syncDot');
+        const syncText = document.getElementById('syncText');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const fileCount = document.getElementById('fileCount');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const formatFilter = document.getElementById('formatFilter');
+        const installBanner = document.getElementById('installBanner');
+        const installBtn = document.getElementById('installBtn');
+        const closeInstallBtn = document.getElementById('closeInstallBtn');
 
-            // ---- 本地存储 ----
-            const STORAGE_KEY = 'pwa_todos';
+        let indexData = null;
+        let currentFormat = 'all';
 
-            function loadTodos() {
-                try {
-                    const raw = localStorage.getItem(STORAGE_KEY);
-                    if (raw) {
-                        const parsed = JSON.parse(raw);
-                        if (Array.isArray(parsed) && parsed.length) {
-                            todos = parsed;
-                            // 确保 id 连续性
-                            const maxId = todos.reduce((max, t) => Math.max(max, t.id || 0), 0);
-                            nextId = maxId + 1;
-                            return;
-                        }
+        // --- Fetch index.json (network-first, bypass SW cache) ---
+        async function fetchIndex(force) {
+            const url = force ? `${INDEX_URL}?_t=${Date.now()}` : INDEX_URL;
+            const opts = force ? { cache: 'no-store' } : {};
+            const resp = await fetch(url, opts);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+            return resp.json();
+        }
+
+        // --- Render ---
+        function render() {
+            loadingState.style.display = 'none';
+            errorState.style.display = 'none';
+            emptyState.style.display = 'none';
+            magazineList.innerHTML = '';
+
+            if (!indexData || !indexData.magazines || indexData.magazines.length === 0) {
+                emptyState.style.display = 'block';
+                fileCount.textContent = '0 本杂志';
+                return;
+            }
+
+            const filtered = indexData.magazines.map(mag => {
+                if (currentFormat === 'all') return mag;
+                const filteredFiles = mag.files.filter(f => f.format === currentFormat);
+                return filteredFiles.length > 0 ? { ...mag, files: filteredFiles } : null;
+            }).filter(Boolean);
+
+            if (filtered.length === 0) {
+                emptyState.style.display = 'block';
+                fileCount.textContent = '0 本杂志';
+                return;
+            }
+
+            let totalFiles = 0;
+
+            filtered.forEach(mag => {
+                totalFiles += mag.files.length;
+
+                const card = document.createElement('div');
+                card.className = 'magazine-card';
+
+                const header = document.createElement('div');
+                header.className = 'mag-card-header';
+
+                const nameEl = document.createElement('div');
+                nameEl.className = 'mag-name';
+                nameEl.textContent = mag.name;
+
+                const issueEl = document.createElement('div');
+                issueEl.className = 'mag-issue';
+                issueEl.textContent = mag.latest_issue;
+
+                header.appendChild(nameEl);
+                header.appendChild(issueEl);
+                card.appendChild(header);
+
+                const fileList = document.createElement('div');
+                fileList.className = 'file-list';
+
+                mag.files.forEach(file => {
+                    const item = document.createElement('div');
+                    item.className = 'file-item';
+
+                    const info = document.createElement('div');
+                    info.className = 'file-info';
+
+                    const icon = document.createElement('div');
+                    icon.className = 'file-icon';
+                    icon.textContent = file.icon || '📄';
+
+                    const meta = document.createElement('div');
+                    meta.className = 'file-meta';
+
+                    const fname = document.createElement('div');
+                    fname.className = 'file-name';
+                    fname.textContent = file.name;
+                    fname.title = file.name;
+
+                    const fsize = document.createElement('div');
+                    fsize.className = 'file-size';
+                    fsize.textContent = file.size_str;
+
+                    meta.appendChild(fname);
+                    meta.appendChild(fsize);
+                    info.appendChild(icon);
+                    info.appendChild(meta);
+
+                    const actions = document.createElement('div');
+                    actions.className = 'file-actions';
+
+                    const filePath = file.url.startsWith('/') ? file.url : BASE_PATH + file.url;
+
+                    if (file.format === 'pdf') {
+                        const previewLink = document.createElement('a');
+                        previewLink.className = 'btn-preview';
+                        previewLink.href = filePath;
+                        previewLink.target = '_blank';
+                        previewLink.rel = 'noopener';
+                        previewLink.textContent = '预览';
+                        actions.appendChild(previewLink);
                     }
-                } catch (_) { /* ignore */ }
-                // 默认示例数据
-                todos = [
-                    { id: nextId++, text: '学习 PWA 开发', completed: false },
-                    { id: nextId++, text: '实现离线缓存', completed: false },
-                    { id: nextId++, text: '添加安装提示', completed: true },
-                ];
-            }
 
-            function saveTodos() {
-                try {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
-                } catch (_) { /* ignore */ }
-            }
+                    const downloadLink = document.createElement('a');
+                    downloadLink.className = 'btn-download';
+                    downloadLink.href = filePath;
+                    downloadLink.download = file.name;
+                    downloadLink.textContent = '下载';
+                    actions.appendChild(downloadLink);
 
-            // ---- 渲染 ----
-            function render() {
-                const filtered = getFilteredTodos();
-                const hasItems = filtered.length > 0;
-
-                // 清空列表
-                todoList.innerHTML = '';
-
-                if (!hasItems) {
-                    emptyState.style.display = 'block';
-                    todoList.style.display = 'none';
-                } else {
-                    emptyState.style.display = 'none';
-                    todoList.style.display = 'block';
-
-                    filtered.forEach(todo => {
-                        const li = document.createElement('li');
-                        li.className = 'todo-item';
-                        li.dataset.id = todo.id;
-
-                        // checkbox
-                        const checkbox = document.createElement('div');
-                        checkbox.className = 'checkbox' + (todo.completed ? ' checked' : '');
-                        checkbox.setAttribute('role', 'checkbox');
-                        checkbox.setAttribute('aria-checked', todo.completed ? 'true' : 'false');
-                        checkbox.tabIndex = 0;
-
-                        // text
-                        const textSpan = document.createElement('span');
-                        textSpan.className = 'todo-text' + (todo.completed ? ' completed' : '');
-                        textSpan.textContent = todo.text;
-
-                        // delete button
-                        const delBtn = document.createElement('button');
-                        delBtn.className = 'btn-delete';
-                        delBtn.innerHTML = '✕';
-                        delBtn.setAttribute('aria-label', '删除');
-
-                        li.appendChild(checkbox);
-                        li.appendChild(textSpan);
-                        li.appendChild(delBtn);
-                        todoList.appendChild(li);
-
-                        // ---- 事件绑定 ----
-                        // 切换完成状态
-                        const toggle = () => {
-                            todo.completed = !todo.completed;
-                            saveTodos();
-                            render();
-                        };
-                        checkbox.addEventListener('click', toggle);
-                        checkbox.addEventListener('keydown', (e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                toggle();
-                            }
-                        });
-
-                        // 删除
-                        delBtn.addEventListener('click', () => {
-                            todos = todos.filter(t => t.id !== todo.id);
-                            saveTodos();
-                            render();
-                        });
-                    });
-                }
-
-                // 更新计数
-                const total = todos.length;
-                const done = todos.filter(t => t.completed).length;
-                todoCount.textContent = `${total} 项 (已完成 ${done})`;
-
-                // 更新 filter 按钮状态
-                filterBtns.forEach(btn => {
-                    const filter = btn.dataset.filter;
-                    btn.classList.toggle('active', filter === currentFilter);
+                    item.appendChild(info);
+                    item.appendChild(actions);
+                    fileList.appendChild(item);
                 });
 
-                // 清空按钮状态
-                clearBtn.style.display = done > 0 ? 'inline-block' : 'none';
-            }
+                card.appendChild(fileList);
+                magazineList.appendChild(card);
+            });
 
-            function getFilteredTodos() {
-                if (currentFilter === 'active') {
-                    return todos.filter(t => !t.completed);
-                } else if (currentFilter === 'completed') {
-                    return todos.filter(t => t.completed);
-                }
-                return todos.slice(); // all
-            }
+            fileCount.textContent = `${filtered.length} 本杂志 · ${totalFiles} 个文件`;
 
-            // ---- 添加待办 ----
-            function addTodo() {
-                const text = todoInput.value.trim();
-                if (!text) {
-                    todoInput.focus();
-                    return;
-                }
-                todos.push({ id: nextId++, text, completed: false });
-                saveTodos();
-                todoInput.value = '';
-                todoInput.focus();
+            // Update sync status
+            if (indexData.updated_at) {
+                const d = new Date(indexData.updated_at);
+                const now = new Date();
+                const diffHours = Math.floor((now - d) / 3600000);
+                syncDot.className = 'sync-dot ' + (diffHours < 48 ? 'ok' : 'stale');
+                const dateStr = d.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' });
+                const timeStr = d.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+                syncText.textContent = diffHours < 1
+                    ? `刚刚同步`
+                    : diffHours < 24
+                    ? `${diffHours} 小时前同步`
+                    : `${Math.floor(diffHours/24)} 天前同步 (${dateStr} ${timeStr})`;
+            }
+        }
+
+        function showLoading() {
+            loadingState.style.display = 'block';
+            errorState.style.display = 'none';
+            emptyState.style.display = 'none';
+            magazineList.innerHTML = '';
+        }
+
+        function showError(msg) {
+            loadingState.style.display = 'none';
+            errorState.style.display = 'block';
+            emptyState.style.display = 'none';
+            magazineList.innerHTML = '';
+            errorDetail.textContent = msg;
+            syncText.textContent = '加载失败';
+            syncDot.className = 'sync-dot stale';
+        }
+
+        // --- Init ---
+        async function loadIndex(force) {
+            if (force) {
+                showLoading();
+                refreshBtn.classList.add('spinning');
+            }
+            try {
+                indexData = await fetchIndex(force);
                 render();
-            }
-
-            // ---- 清除已完成 ----
-            function clearCompleted() {
-                const hasCompleted = todos.some(t => t.completed);
-                if (!hasCompleted) return;
-                todos = todos.filter(t => !t.completed);
-                saveTodos();
-                render();
-            }
-
-            // ---- 过滤切换 ----
-            function setFilter(filter) {
-                if (filter === currentFilter) return;
-                currentFilter = filter;
-                render();
-            }
-
-            // ---- 网络状态 ----
-            function updateOnlineStatus() {
-                const online = navigator.onLine;
-                statusDot.className = 'dot ' + (online ? 'online' : 'offline');
-                statusText.textContent = online ? '在线' : '离线';
-            }
-
-            // ---- PWA 安装 ----
-            let deferredPrompt = null;
-
-            function initPWA() {
-                // 注册 Service Worker
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.register('sw.js')
-                        .then(reg => {
-                            console.log('[PWA] Service Worker 注册成功:', reg);
-                        })
-                        .catch(err => {
-                            console.warn('[PWA] Service Worker 注册失败:', err);
-                        });
+            } catch (e) {
+                if (!indexData) {
+                    showError(e.message);
                 }
-
-                // 监听 beforeinstallprompt
-                window.addEventListener('beforeinstallprompt', (e) => {
-                    e.preventDefault();
-                    deferredPrompt = e;
-                    installBanner.classList.add('show');
-                });
-
-                // 安装按钮
-                installBtn.addEventListener('click', async () => {
-                    if (!deferredPrompt) return;
-                    try {
-                        const result = await deferredPrompt.prompt();
-                        console.log('[PWA] 安装结果:', result.outcome);
-                        if (result.outcome === 'accepted') {
-                            installBanner.classList.remove('show');
-                        }
-                        deferredPrompt = null;
-                    } catch (_) {
-                        /* ignore */
-                    }
-                });
-
-                // 关闭横幅
-                closeInstallBtn.addEventListener('click', () => {
-                    installBanner.classList.remove('show');
-                });
-
-                // 监听 appinstalled
-                window.addEventListener('appinstalled', () => {
-                    installBanner.classList.remove('show');
-                    console.log('[PWA] 应用已安装');
-                });
+                // If we have stale data, keep showing it
+            } finally {
+                refreshBtn.classList.remove('spinning');
             }
+        }
 
-            // ---- 初始化 ----
-            function init() {
-                loadTodos();
-                render();
-                updateOnlineStatus();
+        // --- Format Filter ---
+        formatFilter.addEventListener('click', (e) => {
+            const btn = e.target.closest('.ff-btn');
+            if (!btn) return;
+            const fmt = btn.dataset.format;
+            if (fmt === currentFormat) return;
+            currentFormat = fmt;
+            formatFilter.querySelectorAll('.ff-btn').forEach(b => b.classList.toggle('active', b.dataset.format === fmt));
+            if (indexData) render();
+        });
 
-                // 事件绑定
-                addBtn.addEventListener('click', addTodo);
-                todoInput.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter') addTodo();
-                });
+        // --- Refresh ---
+        refreshBtn.addEventListener('click', () => loadIndex(true));
 
-                clearBtn.addEventListener('click', clearCompleted);
+        // --- Network Status ---
+        function updateOnlineStatus() {
+            const online = navigator.onLine;
+            statusDot.className = 'dot ' + (online ? 'online' : 'offline');
+            statusText.textContent = online ? '在线' : '离线';
+        }
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
 
-                filterBtns.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        setFilter(btn.dataset.filter);
-                    });
-                });
+        // --- PWA Install ---
+        let deferredPrompt = null;
 
-                // 网络状态变化
-                window.addEventListener('online', updateOnlineStatus);
-                window.addEventListener('offline', updateOnlineStatus);
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js')
+                .then(reg => console.log('[PWA] SW registered:', reg))
+                .catch(err => console.warn('[PWA] SW failed:', err));
+        }
 
-                // PWA 相关
-                initPWA();
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            installBanner.classList.add('show');
+        });
 
-                // 点击空白区域自动聚焦输入
-                document.addEventListener('click', (e) => {
-                    if (e.target.closest('.app-container') && !e.target.closest('input') && !e.target.closest(
-                            'button')) {
-                        todoInput.focus();
-                    }
-                });
+        installBtn.addEventListener('click', async () => {
+            if (!deferredPrompt) return;
+            try {
+                const result = await deferredPrompt.prompt();
+                if (result.outcome === 'accepted') installBanner.classList.remove('show');
+                deferredPrompt = null;
+            } catch(_) {}
+        });
 
-                console.log('[PWA] 应用已启动 🚀');
-            }
+        closeInstallBtn.addEventListener('click', () => installBanner.classList.remove('show'));
+        window.addEventListener('appinstalled', () => installBanner.classList.remove('show'));
 
-            // DOM 就绪后启动
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', init);
-            } else {
-                init();
-            }
+        // --- Boot ---
+        updateOnlineStatus();
+        loadIndex(false);
 
-        })();
+        console.log('[PWA] Book library started');
+    })();
     </script>
 
 </body>
