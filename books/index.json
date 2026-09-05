@@ -1,116 +1,116 @@
 {
-  "updated_at": "2026-08-29T10:34:09Z",
+  "updated_at": "2026-09-05T07:55:19Z",
   "magazines": [
     {
       "id": "01_economist",
       "name": "经济学人 The Economist",
-      "latest_issue": "te_2026.08.29",
+      "latest_issue": "te_2026.09.05",
       "file_count": 3,
       "files": [
         {
-          "name": "TheEconomist.2026.08.29.epub",
+          "name": "TheEconomist.2026.09.05.epub",
           "format": "epub",
           "icon": "📖",
           "label": "EPUB",
-          "size": 6344346,
-          "size_str": "6.1 MB",
-          "url": "books/01_economist/te_2026.08.29/TheEconomist.2026.08.29.epub"
+          "size": 7606256,
+          "size_str": "7.3 MB",
+          "url": "books/01_economist/te_2026.09.05/TheEconomist.2026.09.05.epub"
         },
         {
-          "name": "TheEconomist.2026.08.29.mobi",
+          "name": "TheEconomist.2026.09.05.mobi",
           "format": "mobi",
           "icon": "📱",
           "label": "MOBI",
-          "size": 7880915,
-          "size_str": "7.5 MB",
-          "url": "books/01_economist/te_2026.08.29/TheEconomist.2026.08.29.mobi"
+          "size": 8985952,
+          "size_str": "8.6 MB",
+          "url": "books/01_economist/te_2026.09.05/TheEconomist.2026.09.05.mobi"
         },
         {
-          "name": "TheEconomist.2026.08.29.pdf",
+          "name": "TheEconomist.2026.09.05.pdf",
           "format": "pdf",
           "icon": "📄",
           "label": "PDF",
-          "size": 8892958,
-          "size_str": "8.5 MB",
-          "url": "books/01_economist/te_2026.08.29/TheEconomist.2026.08.29.pdf"
+          "size": 10205741,
+          "size_str": "9.7 MB",
+          "url": "books/01_economist/te_2026.09.05/TheEconomist.2026.09.05.pdf"
         }
       ]
     },
     {
       "id": "02_new_yorker",
       "name": "纽约客 The New Yorker",
-      "latest_issue": "2026.08.31",
+      "latest_issue": "2026.09.07",
       "file_count": 3,
       "files": [
         {
-          "name": "new_yorker.2026.08.31.epub",
+          "name": "new_yorker.2026.09.07.epub",
           "format": "epub",
           "icon": "📖",
           "label": "EPUB",
-          "size": 7699283,
-          "size_str": "7.3 MB",
-          "url": "books/02_new_yorker/2026.08.31/new_yorker.2026.08.31.epub"
+          "size": 12238989,
+          "size_str": "11.7 MB",
+          "url": "books/02_new_yorker/2026.09.07/new_yorker.2026.09.07.epub"
         },
         {
-          "name": "new_yorker.2026.08.31.mobi",
+          "name": "new_yorker.2026.09.07.mobi",
           "format": "mobi",
           "icon": "📱",
           "label": "MOBI",
-          "size": 15056037,
-          "size_str": "14.4 MB",
-          "url": "books/02_new_yorker/2026.08.31/new_yorker.2026.08.31.mobi"
+          "size": 7485094,
+          "size_str": "7.1 MB",
+          "url": "books/02_new_yorker/2026.09.07/new_yorker.2026.09.07.mobi"
         },
         {
-          "name": "new_yorker.2026.08.31.pdf",
+          "name": "new_yorker.2026.09.07.pdf",
           "format": "pdf",
           "icon": "📄",
           "label": "PDF",
-          "size": 15762411,
-          "size_str": "15.0 MB",
-          "url": "books/02_new_yorker/2026.08.31/new_yorker.2026.08.31.pdf"
+          "size": 9901096,
+          "size_str": "9.4 MB",
+          "url": "books/02_new_yorker/2026.09.07/new_yorker.2026.09.07.pdf"
         }
       ]
     },
     {
       "id": "04_atlantic",
       "name": "大西洋月刊 The Atlantic",
-      "latest_issue": "2026.08.02",
+      "latest_issue": "2026.09.02",
       "file_count": 2,
       "files": [
         {
-          "name": "Atlantic_2026.08.02.epub",
+          "name": "Atlantic_2026.09.02.epub",
           "format": "epub",
           "icon": "📖",
           "label": "EPUB",
-          "size": 12194158,
-          "size_str": "11.6 MB",
-          "url": "books/04_atlantic/2026.08.02/Atlantic_2026.08.02.epub"
+          "size": 33643676,
+          "size_str": "32.1 MB",
+          "url": "books/04_atlantic/2026.09.02/Atlantic_2026.09.02.epub"
         },
         {
-          "name": "Atlantic_2026.08.02.pdf",
+          "name": "Atlantic_2026.09.02.pdf",
           "format": "pdf",
           "icon": "📄",
           "label": "PDF",
-          "size": 13285154,
-          "size_str": "12.7 MB",
-          "url": "books/04_atlantic/2026.08.02/Atlantic_2026.08.02.pdf"
+          "size": 44444541,
+          "size_str": "42.4 MB",
+          "url": "books/04_atlantic/2026.09.02/Atlantic_2026.09.02.pdf"
         }
       ]
     },
     {
       "id": "05_wired",
       "name": "连线 Wired",
-      "latest_issue": "2026.08.02",
+      "latest_issue": "2026.09.02",
       "file_count": 1,
       "files": [
         {
-          "name": "wired_2026.08.02.epub",
+          "name": "wired_2026.09.02.epub",
           "format": "epub",
           "icon": "📖",
           "label": "EPUB",
-          "size": 35837692,
+          "size": 35889047,
           "size_str": "34.2 MB",
-          "url": "books/05_wired/2026.08.02/wired_2026.08.02.epub"
+          "url": "books/05_wired/2026.09.02/wired_2026.09.02.epub"
         }
       ]
     }
