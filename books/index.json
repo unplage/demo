@@ -1,64 +1,73 @@
 {
-  "updated_at": "2026-09-12T08:12:39Z",
+  "updated_at": "2026-09-19T08:22:25Z",
   "magazines": [
     {
       "id": "01_economist",
       "name": "经济学人 The Economist",
-      "latest_issue": "te_2026.09.12",
-      "file_count": 2,
+      "latest_issue": "te_2026.09.19",
+      "file_count": 3,
       "files": [
         {
-          "name": "TheEconomist.2026.09.12.epub",
+          "name": "TheEconomist.2026.09.19.epub",
           "format": "epub",
           "icon": "📖",
           "label": "EPUB",
-          "size": 6917751,
-          "size_str": "6.6 MB",
-          "url": "books/01_economist/te_2026.09.12/TheEconomist.2026.09.12.epub"
+          "size": 6303524,
+          "size_str": "6.0 MB",
+          "url": "books/01_economist/te_2026.09.19/TheEconomist.2026.09.19.epub"
         },
         {
-          "name": "TheEconomist.2026.09.12.mobi",
+          "name": "TheEconomist.2026.09.19.mobi",
           "format": "mobi",
           "icon": "📱",
           "label": "MOBI",
-          "size": 8067465,
-          "size_str": "7.7 MB",
-          "url": "books/01_economist/te_2026.09.12/TheEconomist.2026.09.12.mobi"
+          "size": 7893879,
+          "size_str": "7.5 MB",
+          "url": "books/01_economist/te_2026.09.19/TheEconomist.2026.09.19.mobi"
+        },
+        {
+          "name": "TheEconomist.2026.09.19.pdf",
+          "format": "pdf",
+          "icon": "📄",
+          "label": "PDF",
+          "size": 9028963,
+          "size_str": "8.6 MB",
+          "url": "books/01_economist/te_2026.09.19/TheEconomist.2026.09.19.pdf"
         }
       ]
     },
     {
       "id": "02_new_yorker",
       "name": "纽约客 The New Yorker",
-      "latest_issue": "2026.09.14",
+      "latest_issue": "2026.09.21",
       "file_count": 3,
       "files": [
         {
-          "name": "new_yorker.2026.09.14.epub",
+          "name": "new_yorker.2026.09.21.epub",
           "format": "epub",
           "icon": "📖",
           "label": "EPUB",
-          "size": 12854657,
-          "size_str": "12.3 MB",
-          "url": "books/02_new_yorker/2026.09.14/new_yorker.2026.09.14.epub"
+          "size": 14160247,
+          "size_str": "13.5 MB",
+          "url": "books/02_new_yorker/2026.09.21/new_yorker.2026.09.21.epub"
         },
         {
-          "name": "new_yorker.2026.09.14.mobi",
+          "name": "new_yorker.2026.09.21.mobi",
           "format": "mobi",
           "icon": "📱",
           "label": "MOBI",
-          "size": 6041183,
-          "size_str": "5.8 MB",
-          "url": "books/02_new_yorker/2026.09.14/new_yorker.2026.09.14.mobi"
+          "size": 6180686,
+          "size_str": "5.9 MB",
+          "url": "books/02_new_yorker/2026.09.21/new_yorker.2026.09.21.mobi"
         },
         {
-          "name": "new_yorker.2026.09.14.pdf",
+          "name": "new_yorker.2026.09.21.pdf",
           "format": "pdf",
           "icon": "📄",
           "label": "PDF",
-          "size": 7248838,
+          "size": 7238821,
           "size_str": "6.9 MB",
-          "url": "books/02_new_yorker/2026.09.14/new_yorker.2026.09.14.pdf"
+          "url": "books/02_new_yorker/2026.09.21/new_yorker.2026.09.21.pdf"
         }
       ]
     },
