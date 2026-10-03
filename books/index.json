@@ -1,73 +1,64 @@
 {
-  "updated_at": "2026-09-26T08:55:01Z",
+  "updated_at": "2026-10-03T09:31:05Z",
   "magazines": [
     {
       "id": "01_economist",
       "name": "经济学人 The Economist",
-      "latest_issue": "te_2026.09.26",
-      "file_count": 3,
+      "latest_issue": "te_2026.10.03",
+      "file_count": 2,
       "files": [
         {
-          "name": "TheEconomist.2026.09.26.epub",
+          "name": "TheEconomist.2026.10.03.epub",
           "format": "epub",
           "icon": "📖",
           "label": "EPUB",
-          "size": 6063213,
-          "size_str": "5.8 MB",
-          "url": "books/01_economist/te_2026.09.26/TheEconomist.2026.09.26.epub"
+          "size": 6007654,
+          "size_str": "5.7 MB",
+          "url": "books/01_economist/te_2026.10.03/TheEconomist.2026.10.03.epub"
         },
         {
-          "name": "TheEconomist.2026.09.26.mobi",
+          "name": "TheEconomist.2026.10.03.mobi",
           "format": "mobi",
           "icon": "📱",
           "label": "MOBI",
-          "size": 7677598,
-          "size_str": "7.3 MB",
-          "url": "books/01_economist/te_2026.09.26/TheEconomist.2026.09.26.mobi"
-        },
-        {
-          "name": "TheEconomist.2026.09.26.pdf",
-          "format": "pdf",
-          "icon": "📄",
-          "label": "PDF",
-          "size": 8747450,
-          "size_str": "8.3 MB",
-          "url": "books/01_economist/te_2026.09.26/TheEconomist.2026.09.26.pdf"
+          "size": 7576960,
+          "size_str": "7.2 MB",
+          "url": "books/01_economist/te_2026.10.03/TheEconomist.2026.10.03.mobi"
         }
       ]
     },
     {
       "id": "02_new_yorker",
       "name": "纽约客 The New Yorker",
-      "latest_issue": "2026.09.28",
+      "latest_issue": "2026.10.05",
       "file_count": 3,
       "files": [
         {
-          "name": "new_yorker.2026.09.28.epub",
+          "name": "new_yorker.2026.10.05.epub",
           "format": "epub",
           "icon": "📖",
           "label": "EPUB",
-          "size": 6170252,
-          "size_str": "5.9 MB",
-          "url": "books/02_new_yorker/2026.09.28/new_yorker.2026.09.28.epub"
+          "size": 12462014,
+          "size_str": "11.9 MB",
+          "url": "books/02_new_yorker/2026.10.05/new_yorker.2026.10.05.epub"
         },
         {
-          "name": "new_yorker.2026.09.28.mobi",
+          "name": "new_yorker.2026.10.05.mobi",
           "format": "mobi",
           "icon": "📱",
           "label": "MOBI",
-          "size": 6272861,
-          "size_str": "6.0 MB",
-          "url": "books/02_new_yorker/2026.09.28/new_yorker.2026.09.28.mobi"
+          "size": 5412832,
+          "size_str": "5.2 MB",
+          "url": "books/02_new_yorker/2026.10.05/new_yorker.2026.10.05.mobi"
         },
         {
-          "name": "new_yorker.2026.09.28.pdf",
+          "name": "new_yorker.2026.10.05.pdf",
           "format": "pdf",
           "icon": "📄",
           "label": "PDF",
-          "size": 7959754,
-          "size_str": "7.6 MB",
-          "url": "books/02_new_yorker/2026.09.28/new_yorker.2026.09.28.pdf"
+          "size": 7315420,
+          "size_str": "7.0 MB",
+          "url": "books/02_new_yorker/2026.10.05/new_yorker.2026.10.05.pdf"
         }
       ]
     },
@@ -100,17 +91,17 @@
     {
       "id": "05_wired",
       "name": "连线 Wired",
-      "latest_issue": "2026.09.02",
+      "latest_issue": "2026.10.02",
       "file_count": 1,
       "files": [
         {
-          "name": "wired_2026.09.02.epub",
+          "name": "wired_2026.10.02.epub",
           "format": "epub",
           "icon": "📖",
           "label": "EPUB",
-          "size": 35889047,
-          "size_str": "34.2 MB",
-          "url": "books/05_wired/2026.09.02/wired_2026.09.02.epub"
+          "size": 34105089,
+          "size_str": "32.5 MB",
+          "url": "books/05_wired/2026.10.02/wired_2026.10.02.epub"
         }
       ]
     }
