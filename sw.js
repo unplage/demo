@@ -2,7 +2,20 @@
 
 // ---------- 1. Dynamic path & cache ----------
 const BASE_PATH = self.location.pathname.replace(/[^/]+$/, '');
-const CACHE_NAME = `pwa-cache${BASE_PATH.replace(/\//g, '-')}v3`;
+
+// Project id derived from this worker's own path: /demo/sw.js -> "demo".
+// Workers served from the origin root use "root".
+const PROJECT_ID = BASE_PATH.split('/').filter(Boolean).pop() || 'root';
+const CACHE_PREFIX = `pwa-cache-${PROJECT_ID}--`;
+const CACHE_VERSION = 'v4';
+const CACHE_NAME = `${CACHE_PREFIX}${CACHE_VERSION}`;
+
+// Old naming from earlier versions, kept only to clean up this project's own
+// leftovers: pwa-cache-v3 (root) / pwa-cache-demo-v3 (sub path). Match the full
+// name so similarly named sibling projects (demo-v2, ...) are left untouched.
+const LEGACY_CACHE_PATTERN = new RegExp(
+  `^pwa-cache${BASE_PATH.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\//g, '-')}v\\d+$`
+);
 
 const PRECACHE_URLS = [
   BASE_PATH,
@@ -23,6 +36,11 @@ function isStaticResource(url) {
 
 function isNavigateRequest(request) {
   return request.mode === 'navigate' || (request.method === 'GET' && request.destination === 'document');
+}
+
+// Only look inside this project's cache, never the shared origin-wide set.
+function matchOwnCache(request) {
+  return caches.open(CACHE_NAME).then(cache => cache.match(request));
 }
 
 // ---------- 3. Install ----------
@@ -46,7 +64,8 @@ self.addEventListener('activate', (event) => {
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames.map(cache => {
-          if (cache.startsWith('pwa-cache-') && cache !== CACHE_NAME) {
+          const ownCache = cache.startsWith(CACHE_PREFIX) || LEGACY_CACHE_PATTERN.test(cache);
+          if (ownCache && cache !== CACHE_NAME) {
             console.log('[SW] Delete old cache:', cache);
             return caches.delete(cache);
           }
@@ -75,7 +94,7 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         })
         .catch(async () => {
-          const cached = await caches.match(request);
+          const cached = await matchOwnCache(request);
           if (cached) return cached;
           return new Response('{"magazines":[]}', {
             status: 200,
@@ -89,7 +108,7 @@ self.addEventListener('fetch', (event) => {
   // 5.2 Book files (epub/pdf/mobi): cache-first + background update
   if (url.pathname.includes('/books/') && !url.pathname.endsWith('/books/index.json')) {
     event.respondWith(
-      caches.match(request).then(cached => {
+      matchOwnCache(request).then(cached => {
         const networkFetch = fetch(request).then(networkResponse => {
           if (networkResponse && networkResponse.status === 200) {
             const clone = networkResponse.clone();
@@ -116,7 +135,7 @@ self.addEventListener('fetch', (event) => {
           return networkResponse;
         })
         .catch(async () => {
-          const cached = await caches.match(request);
+          const cached = await matchOwnCache(request);
           if (cached) return cached;
           return new Response(
             '<h1>📴 离线状态</h1><p>请检查网络连接后刷新页面。</p>',
@@ -130,7 +149,7 @@ self.addEventListener('fetch', (event) => {
   // 5.4 Static resources: cache-first
   if (isStaticResource(url)) {
     event.respondWith(
-      caches.match(request).then(cached => {
+      matchOwnCache(request).then(cached => {
         if (cached) return cached;
         return fetch(request).then(networkResponse => {
           if (networkResponse && networkResponse.status === 200) {
