@@ -1,38 +1,38 @@
 {
-  "updated_at": "2026-11-14T11:04:10Z",
+  "updated_at": "2026-11-21T11:54:00Z",
   "magazines": [
     {
       "id": "01_economist",
       "name": "经济学人 The Economist",
-      "latest_issue": "te_2026.11.14",
+      "latest_issue": "te_2026.11.21",
       "file_count": 3,
       "files": [
         {
-          "name": "TheEconomist.2026.11.14.epub",
+          "name": "TheEconomist.2026.11.21.epub",
           "format": "epub",
           "icon": "📖",
           "label": "EPUB",
-          "size": 5610969,
-          "size_str": "5.4 MB",
-          "url": "books/01_economist/te_2026.11.14/TheEconomist.2026.11.14.epub"
+          "size": 6329455,
+          "size_str": "6.0 MB",
+          "url": "books/01_economist/te_2026.11.21/TheEconomist.2026.11.21.epub"
         },
         {
-          "name": "TheEconomist.2026.11.14.mobi",
+          "name": "TheEconomist.2026.11.21.mobi",
           "format": "mobi",
           "icon": "📱",
           "label": "MOBI",
-          "size": 6848904,
-          "size_str": "6.5 MB",
-          "url": "books/01_economist/te_2026.11.14/TheEconomist.2026.11.14.mobi"
+          "size": 7724882,
+          "size_str": "7.4 MB",
+          "url": "books/01_economist/te_2026.11.21/TheEconomist.2026.11.21.mobi"
         },
         {
-          "name": "TheEconomist.2026.11.14.pdf",
+          "name": "TheEconomist.2026.11.21.pdf",
           "format": "pdf",
           "icon": "📄",
           "label": "PDF",
-          "size": 7893651,
-          "size_str": "7.5 MB",
-          "url": "books/01_economist/te_2026.11.14/TheEconomist.2026.11.14.pdf"
+          "size": 8837030,
+          "size_str": "8.4 MB",
+          "url": "books/01_economist/te_2026.11.21/TheEconomist.2026.11.21.pdf"
         }
       ]
     },
